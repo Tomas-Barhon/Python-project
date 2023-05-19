@@ -14,10 +14,10 @@ class Downloader:
         with open(self.file_name + ".zip",'wb') as output_file:
             output_file.write(r.content)
     def unzip_files_return_dataframe(self):
-        with ZipFile("C:\\Users\\tomas\\Python Project\\" + self.file_name + ".zip", 'r') as zObject:
+        with ZipFile("C:\\Users\\tomas\\Python-Project\\" + self.file_name + ".zip", 'r') as zObject:
             # Extracting all the members of the zip 
             # into a specific location.
             zObject.extractall(
-                path="C:\\Users\\tomas\\Python Project")
+                path="C:\\Users\\tomas\\Python-Project")
         return pd.read_csv(self.file_name + ".csv")
         
