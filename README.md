@@ -1,8 +1,21 @@
 # Python-project
-This is a python project for out subject Data Processing in Python (JEM207) belonging to Tomáš Barhoň and Radim Plško.
-We will be studying the impact of different makroeconomical and socio-economical indicators that might be the driving forces for an increased criminality in different regions in the czech republic.
-We would like to thank the creators of the database including all the cities in Czech Republic which we will use.
+This is a python project for our subject Data Processing in Python (JEM207) belonging to Tomáš Barhoň and Radim Plško.
+
+We will be studying the impact of socio-economical indicators that might be the driving forces for an increased economical criminality in different regions in the Czech Republic.
 The main data source will be the https://kriminalita.policie.cz/ API that contains information about all sorts of crimes and their geographical location.
+For the socio-economical data we used the data from PAQ research. The four indicators chosen were "Lidé v exekuci (2021) [%]" (ammount of people with foreclosure), "Podíl lidí bez středního vzdělání (2021) [%]" (ammount of people without completed highschool), "Domácnosti čerpající přídavek na živobytí (2020) [%]" (ammount of people receiving social benefits), "Propadání (průměr 2015–2021) [%]" (ammount of kids that obtain 5 from any subject at the end of summer semester). These data are obtained from various open-data sources that are mentioned in the references.
+
+The data on criminality is subseted in order to fulfill following conditions. The crime is illegal and did really happen. The record has relevance "Místo následku" (the place where the consequences appear) "Místo spáchání" (the exact place where it was commited). And finally we subset only the crimes that are of an economical nature. (thefts, burglary, ...). We are analysing the data from 2021-2023 (currently till June) which yields about 500 000 criminal records.
+
+The main purpouse of the project is to analyse the data on the level of "ORP" which is relatively small administrative unit in the Czech Republic. We would like to take two different approaches with one being visualizations of the states of each factor in the regions and visually comparring the maps. The second one being correlational analysis between criminality and each of the indicators.
+
+
 References:
-https://github.com/33bcdd/souradnice-mest
+https://www.datapaq.cz/
+PAQ data endpoints:
+Domácnosti čerpající přídavek na živobytí (2020) po ORP -> Agentura pro sociální začleňování, MPSV
+Podíl lidí bez středního vzdělání -> ČSÚ, SLDB 2021
+Propadání (2015-2021)-> ČŠI
+Lidé v exekuci (2021)-> Exekutorská komora ČR, ČSÚ, Czech Household Panel Study
+
 https://kriminalita.policie.cz/
