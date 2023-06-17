@@ -1,0 +1,4 @@
+keep relevance id 3,4
+keep states 1,2,3,4
+visualizations majetkové a násilné zvlášť
+types 18 - 62
