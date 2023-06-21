@@ -16,10 +16,10 @@ class Visualizer_of_criminal_data:
         map_buffer = [self.relative_crime_map,self.foreclosure_map,self.dropout_rate_map,self.without_highschool_map,self.benefits_map,self.criminality_risk_index_map]
         column_name_buffer = ["Počet kriminálních aktivit per capita","Lidé v exekuci (2021) [%]","Propadání (průměr 2015–2021) [%]",
                             "Podíl lidí bez středního vzdělání (2021) [%]","Domácnosti čerpající přídavek na živobytí (2020) [%]","Criminality risk index"]
-        english_legend_name_buffer = ["Criminality per capita","People in foreclosure (2021) [%]","Dropout (average 2015–2021) [%]",
+        self.english_legend_name_buffer = ["Criminality per capita","People in foreclosure (2021) [%]","Dropout (average 2015–2021) [%]",
                             "Share of people without completed high school (2021) [%]","Households on allowances (2020) [%]","Criminality risk index"]
         map_output_list = []
-        for map, column_name, english_legend_name in zip(map_buffer, column_name_buffer, english_legend_name_buffer):
+        for map, column_name, english_legend_name in zip(map_buffer, column_name_buffer, self.english_legend_name_buffer):
             folium.Choropleth(
             geo_data=self.data_table,
             data=self.data_table,
@@ -41,4 +41,5 @@ class Visualizer_of_criminal_data:
         sns.regplot(data=self.data_table, x="Propadání (průměr 2015–2021) [%]",y="Počet kriminálních aktivit per capita", color="blue", scatter_kws={'alpha': 0.5}, line_kws={'color': 'red'}, ax=axes[1,1])
         plt.show()
     def show_correlation_heatmap(self):
-        sns.heatmap(self.data_table.corr()[["Počet kriminálních aktivit per capita"]].sort_values(by="Počet kriminálních aktivit per capita"), linewidths=1, annot=True)
+        sns.heatmap(self.data_table[["Počet kriminálních aktivit per capita","Lidé v exekuci (2021) [%]","Propadání (průměr 2015–2021) [%]",
+                            "Podíl lidí bez středního vzdělání (2021) [%]","Domácnosti čerpající přídavek na živobytí (2020) [%]"]].corr()[["Počet kriminálních aktivit per capita"]].sort_values(by="Počet kriminálních aktivit per capita"), linewidths=1, annot=True)
