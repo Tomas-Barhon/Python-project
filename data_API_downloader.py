@@ -104,6 +104,12 @@ class Data_pipeline:
         self.final_table = self.final_table.merge(self.paq_data,how="left",left_on=["NAZEV"],right_on=["Název ORP"])
         self.final_table = self.final_table.merge(self.people_in_polygons,how="left",left_on=["NAZEV"],right_on=["ORP_NAZEV"])
         self.final_table = self.final_table.fillna(0)
-        self.final_table = self.final_table["counts/per_person"] = self.final_table["counts"]/self.final_table["AMMOUNT"]
+        self.final_table["Počet kriminálních aktivit per capita"] = self.final_table["counts"]/self.final_table["AMMOUNT"]
         self.final_table = self.final_table.replace(to_replace=np.inf,value=0)
+        self.final_table.drop(["NAZEV","counts","Název ORP","ORP_NAZEV","AMMOUNT"],axis = 1,inplace=True)
+        weights = self.final_table.corr()[["Počet kriminálních aktivit per capita"]]
+        weights.drop(["Počet kriminálních aktivit per capita"],axis = 0,inplace=True)
+        weights = weights.values
+        self.final_table["Criminality risk index"] = self.final_table.apply(lambda row: (row["Lidé v exekuci (2021) [%]"]*weights[0] + row["Podíl lidí bez středního vzdělání (2021) [%]"]*weights[1] +
+                                                        row["Domácnosti čerpající přídavek na živobytí (2020) [%]"]*weights[2] + row["Propadání (průměr 2015–2021) [%]"]*weights[3])[0],axis=1)
         return self.final_table
