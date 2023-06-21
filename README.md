@@ -9,6 +9,7 @@ The data on criminality is subseted in order to fulfill following conditions. Th
 
 The main purpouse of the project is to analyse the data on the level of "ORP" which is relatively small administrative unit in the Czech Republic. We would like to take two different approaches with one being visualizations of the states of each factor in the regions and visually comparring the maps. The second one being correlational analysis between criminality and each of the indicators.
 
+We analysed how the individual indicators influence the level of economic criminality. As following, we created the index of criminality that indicates how each ORPs stand on the scale of criminal activities compared to other regions. All this based on the information we received from the previous analysis.
 
 References:
 https://www.datapaq.cz/
