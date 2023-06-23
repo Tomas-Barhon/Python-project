@@ -22,6 +22,7 @@ class Downloader:
                     output_file.write(r.content)
         except:
             pass
+
     def unzip_files_return_dataframe(self):
         try:
             with ZipFile("./" + self.file_name + ".zip", 'r') as zObject:
@@ -32,6 +33,7 @@ class Downloader:
                 return pd.read_csv(self.file_name + ".csv")
         except:
                 return None
+        
     def get_multiple_years(self,years):
         data = []
         for year in years:
@@ -57,7 +59,6 @@ class Data_pipeline:
             self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
             self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
         
-
     def match_crime_data_to_polygons(self):
         if self.create_data:
             self.crime_data = self.crime_data[(self.crime_data["relevance"] == 3) | (self.crime_data["relevance"] == 4)]
