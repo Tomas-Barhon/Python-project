@@ -1,0 +1,69 @@
+
+% -------<<< Definice parametrů formátu >>>-------
+\documentclass[a4paper, 12pt]{article}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[hang]{caption}
+\usepackage[top=3cm, bottom=2cm, right=2.5cm, left=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{natbib}		
+\usepackage{mathtools}
+\usepackage{amsmath}
+\bibpunct{(}{)}{;}{a}{,}{;}	
+
+% --------<<< ------------------------- >>>--------
+
+\begin{document}
+
+\begin{center}
+\textsc{Charles University} \\ 
+\textsc{Faculty of Social Sciences}\\ 
+\textsc{Institute of Economic Studies}\\[0.5em]
+Data Processing in Python\\
+SS 2022/2023\\ %[2em]
+\end{center}
+
+\begin{minipage}{1\textwidth}
+\begin{center}
+\title{\textbf{\emph{Project Report: 
+Examination of Criminality in the Czech Republic Based on Socio-Economic Variables}}}
+\author{\textbf{Tomáš Barhoň, Radim Plško}}
+\date{July 2023}
+
+\maketitle
+\end{center}
+\thispagestyle{empty}
+\end{minipage}
+
+\newpage %
+\section{Introduction}
+\paragraph{\normalfont{This report provides an overview of a project conducted by Tomáš Barhoň and Radim Plško for the Data Processing in Python class. The project aims to study the impact of socio-economic indicators on the level of economic criminality in different regions of the Czech Republic.}}
+
+\section{Data Source}
+\paragraph{\normalfont{The primary data source for this project is the https://kriminalita.policie.cz/ API, which provides information about various types of crimes and their geographical locations. The socio-economic data were obtained from PAQ research and various open-data sources.}}
+
+\paragraph{\normalfont{The study focused on the following four socio-economic indicators:}}
+
+\begin{enumerate}
+\item Lidé v exekuci (2021) - The percentage of people with foreclosure.
+\item Podíl lidí bez středního vzdělání (2021) - The percentage of people without completed high school education.
+\item Domácnosti čerpající přídavek na živobytí (2020) - The percentage of households receiving social benefits.
+\item Propadání (průměr 2015–2021) - The percentage of children that obtain a grade of 5 from any subject at the end of the summer semester.
+\end{enumerate}
+
+\section{Crime Data}
+\paragraph{\normalfont{The crime data was subset to meet specific conditions. The crimes included in the study are illegal, verifiable, and of an economic nature, such as thefts and burglaries. The data was analyzed for the period from 2021 to 2023 (up to June), yielding about 500,000 criminal records.}}
+
+\section{Findings}
+\paragraph{\normalfont{The team created an index of criminality that indicates how each ORP (obec s rozšířenou působností) stands on the scale of criminal activities compared to other regions. This was based on the information obtained from the previous analysis.}}
+
+\section{References}
+\paragraph{\normalfont{The data used in this project was obtained from various sources including the Czech Statistical Office, the Agency for Social Inclusion, the Ministry of Labour and Social Affairs, the Chamber of Executors of the Czech Republic, and the Czech Household Panel Study.}}
+
+\bibliographystyle{apa}
+\bibliography{bibliography.bib}	
+
+\end{document}
+%-----<<<<<<<<< END OF DOCUMENT >>>>>>>>>-----
