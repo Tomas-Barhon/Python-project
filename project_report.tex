@@ -1,5 +1,3 @@
-
-% -------<<< Definice parametrů formátu >>>-------
 \documentclass[a4paper, 12pt]{article}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
@@ -28,9 +26,9 @@ SS 2022/2023\\ %[2em]
 \begin{minipage}{1\textwidth}
 \begin{center}
 \title{\textbf{\emph{Project Report: 
-Examination of Criminality in the Czech Republic Based on Socio-Economic Variables}}}
+Examination of Criminality in the Czech Republic Based on Socio-Economic Determinants}}}
 \author{\textbf{Tomáš Barhoň, Radim Plško}}
-\date{July 2023}
+\date{August 2023}
 
 \maketitle
 \end{center}
@@ -39,10 +37,12 @@ Examination of Criminality in the Czech Republic Based on Socio-Economic Variabl
 
 \newpage %
 \section{Introduction}
-\paragraph{\normalfont{This report provides an overview of a project conducted by Tomáš Barhoň and Radim Plško for the Data Processing in Python class. The project aims to study the impact of socio-economic indicators on the level of economic criminality in different regions of the Czech Republic.}}
+\paragraph{\normalfont{This report provides an overview of a project conducted by Tomáš Barhoň and Radim Plško for the Data Processing in Python class in the summer semester 2022/23. The project aims to study the impact of socio-economic indicators on the level of economic criminality in different regions of the Czech Republic ("obce s rozšířenou působností").}}
 
 \section{Data Source}
-\paragraph{\normalfont{The primary data source for this project is the https://kriminalita.policie.cz/ API, which provides information about various types of crimes and their geographical locations. The socio-economic data were obtained from PAQ research and various open-data sources.}}
+\paragraph{\normalfont{The primary data source for this project is the https://kriminalita.policie.cz/ API, which provides information about various types of crimes and their precise geographical locations ("points of crimes"). Therefore, in order to be able to work with crimes on the level of regions ("ORP"), we needed to fit these points of crime to the geographical locations of ORPs. The socio-economic data were obtained from PAQ research and various open-data sources.}}
+
+\paragraph{\normalfont{The socio-economic data were obtained from various open-data sources, but mainly from PAQ research (https://www.datapaq.cz/) where all data were recorded on ORP from the beginning which was the most convenient for us.}}
 
 \paragraph{\normalfont{The study focused on the following four socio-economic indicators:}}
 
@@ -54,16 +54,17 @@ Examination of Criminality in the Czech Republic Based on Socio-Economic Variabl
 \end{enumerate}
 
 \section{Crime Data}
-\paragraph{\normalfont{The crime data was subset to meet specific conditions. The crimes included in the study are illegal, verifiable, and of an economic nature, such as thefts and burglaries. The data was analyzed for the period from 2021 to 2023 (up to June), yielding about 500,000 criminal records.}}
+\paragraph{\normalfont{The crime data was subset to meet specific conditions. The crimes included in the study are illegal, verifiable, and of an economic nature, such as thefts and burglaries - to be most relevant to the case of chosen specific socio-economic variables. The data was analyzed for the period from 2021 to 2023, yielding about 500,000 criminal records.}}
 
 \section{Findings}
-\paragraph{\normalfont{The team created an index of criminality that indicates how each ORP (obec s rozšířenou působností) stands on the scale of criminal activities compared to other regions. This was based on the information obtained from the previous analysis.}}
+\paragraph{\normalfont{We created an index of criminality that indicates how each ORP stands on the scale of criminal activities compared to other regions. This was based on the information obtained from the previous analysis that can be found on this GitHub link: https://github.com/Tomas-Barhon/Python-project.}}
 
 \section{References}
-\paragraph{\normalfont{The data used in this project was obtained from various sources including the Czech Statistical Office, the Agency for Social Inclusion, the Ministry of Labour and Social Affairs, the Chamber of Executors of the Czech Republic, and the Czech Household Panel Study.}}
+\paragraph{\normalfont{The data used in this project, that we acquired from PAQ research, were obtained from various sources including the Czech Statistical Office, the Agency for Social Inclusion, the Ministry of Labour and Social Affairs, the Chamber of Executors of the Czech Republic, and the Czech Household Panel Study.}}
+
+\paragraph{\normalfont{The records of crime acts are exclusively from the Police of the Czech Republic which as the only one has the resources for it. }}
 
 \bibliographystyle{apa}
 \bibliography{bibliography.bib}	
 
 \end{document}
-%-----<<<<<<<<< END OF DOCUMENT >>>>>>>>>-----
