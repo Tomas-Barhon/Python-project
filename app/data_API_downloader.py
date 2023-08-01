@@ -8,8 +8,69 @@ from shapely import geometry
 from shapely.geometry import Point
 
 class Downloader:
+    """
+    Downloader is a class for downloading data from kriminalita.policie API that are stored as geographical points with their attributes specifying them. It can work in two regimes. 
+    The first usecase it to download the data for one specific month and unzip it into csv file. The other usecase is meant for more complex analysis as the method get_multiple_years() 
+    downloads data for several available years and combines them together into one DataFrame. It is only designed to download data from this specific API for future analysis
+    and thus can be used in different project on its own.
+
+    ...
+
+    Attributes
+    ----------
+    year : int
+        The year from which to choose the month you specify later. It has to be of an integer type from 2012 which is the first year that is available on the API. 
+        If non-integer is provided it will cause TypeError. If year < 2012 is provided Value Error will be raised.
+
+    month : int
+        The month from the specific year you want to obatin the data from. It has to be of an integer type and it has to be in the range from 1-12.
+        If non-integer is provided it will cause TypeError. If month does not fall into range 1-12 ValueError will be raised.
+        
+    Methods
+    -------
+    get_request()
+        Tries to download the data from the kriminalita.policie API for the specified year and month of the class constructor. If it fails it might mean that there is a problem on the side of the API. 
+        Check the link, whether the data is available there.
+
+    unzip_files_return_dataframe()
+        Returns DataFrame if the previous get_request() was successful by unzipping the downloaded file. Make sure not to rename the downloaded files. Returns None if it was not able
+        to unzip the downloaded zip file.  
+
+    get_multiple_years(years)
+        Returns a DataFrame with all the data available 
+
+        ...
+
+        Attributes
+        ----------
+        years : list of int
+            List of years in integer form specifing the years from which you want to collect the data. The year has to be higer or equal to 2012 and in order to obtain the DataFrame
+            at least some of the years have to have available data for them. Raises TypeError if non-integer list ist passed. Raises ValueError if any of the years if smaller than 2012.
+
+    """
     def __init__(self, year, month) -> None:
-        self.file_name = f"{year}{month}"
+        #check that year and month are integers and whether they are from the possible range
+        if not isinstance(year, int):
+            raise TypeError("Expected an integer, but received {}.".format(type(year).__name__))
+        
+        if not isinstance(month, int):
+            raise TypeError("Expected an integer, but received {}.".format(type(month).__name__))
+        
+        if isinstance(year, int) and isinstance(month, int) and year < 2012:
+            raise ValueError("The year has to be greater than 2012.")
+        
+        if month not in range(1,13):
+            raise ValueError("The month has to be between 1-12.")
+        
+        #convert the numbers from 1-9 to 01-09
+        self.months_mapping = ["0" + str(month) if month < 10 else str(month) for month in range(1,13)]
+        self.month = str(month)
+        self.year = str(year)
+        if month in range(1,10):
+            self.month = self.months_mapping[month - 1]
+        self.file_name = self.year + self.month
+
+        
 
     def get_request(self):
         try:
@@ -21,6 +82,7 @@ class Downloader:
                 with open(self.file_name + ".zip",'wb') as output_file:
                     output_file.write(r.content)
         except:
+            print("Something went wrong, try to check your previous steps.")
             pass
 
     def unzip_files_return_dataframe(self):
@@ -32,29 +94,43 @@ class Downloader:
                     path="./")
                 return pd.read_csv(self.file_name + ".csv")
         except:
-                return None
+            print("Downloader was not able to unzip the file. It might have been renamed or deleted try to repeat your previous steps and follow the instructions carefully.")
+            return None
         
     def get_multiple_years(self,years):
         data = []
+
+        #check that all years are integers greater than 2011
         for year in years:
-            for month in ["01","02","03","04","05","06","07","08","09","10","11","12"]:
+            if not isinstance(year, int):
+                raise TypeError("Expected an integer, but received {}.".format(type(year).__name__))
+            if isinstance(year, int) and isinstance(month, int) and year < 2012:
+                raise ValueError("The year has to be greater than 2012.")
+            
+        for year in years:
+            for month in self.months_mapping:
                 self.file_name = f"{year}" + month
                 file = self.get_request()
                 unzipped_file = self.unzip_files_return_dataframe()
                 if isinstance(unzipped_file,pd.DataFrame):
                     data.append(unzipped_file)
-        return pd.concat(data,axis=0,ignore_index=True)
-    
+        try:
+            return pd.concat(data,axis=0,ignore_index=True)
+        except:
+            raise ValueError("You might have chosen years that do not have the data available yet. Try to check this on the kriminalita.policie API.")
 class Data_pipeline:
     def __init__(self, crime_data, create_data = True) -> None:
+
         self.create_data = create_data
         self.people_in_polygons = pd.read_excel("počet_obyvatel_ORP.xlsx").dropna()
         self.people_in_polygons.reset_index(drop=True,inplace=True)
         self.people_in_polygons.rename(columns = {"Kraje / SO ORP":"ORP_NAZEV","Počet\nobyvatel\ncelkem":"AMMOUNT"},inplace = True)
         geojson = gp.read_file("ORP_P.shp",encoding = "Windows-1250")
         self.polygons = geojson.to_crs(epsg=4326)
+
         if self.create_data:
             self.crime_data = crime_data
+
         if not self.create_data:
             self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
             self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
@@ -71,7 +147,9 @@ class Data_pipeline:
                     if point.within(polygon):
                         self.crime_data.iloc[indx,8] = region_name
                         break
+
             self.data_in_polygons = self.crime_data
+
         if not self.create_data:
             self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
             self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
