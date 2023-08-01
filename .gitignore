@@ -1,3 +1,4 @@
 *.csv
 *.zip
 *.xlsx
+!počet_obyvatel_ORP.xlsx
