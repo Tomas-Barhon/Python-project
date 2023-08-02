@@ -2,7 +2,7 @@
 import seaborn as sns
 import folium
 import matplotlib.pyplot as plt
-class Visualizer_of_criminal_data:
+class VisualizerOfCriminalData:
     """
     Visualizer that can return choropleth Folium maps for 6 different parameters with the polygons on the level ORP ("obce s rozšířenou působností"): 
     "Počet kriminálních aktivit per capita","Lidé v exekuci (2021) [%]","Propadání (průměr 2015–2021) [%]",

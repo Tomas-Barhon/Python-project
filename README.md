@@ -27,7 +27,15 @@ as the data was in quite a messy Excel file, we had to transform it manually and
 
 ## How to install the project with pip
 
+## How to use the modules seperately for your own project
+
 ## Userguide for the project
+
+## How to open the notebook with the Folium maps displayed
+In order to open the notebook in your web-browser and be able to see all the visualizations you need to open the notebook in nbviewer. 
+You can find it on the following link:
+https://nbviewer.org/github/Tomas-Barhon/Python-project/blob/main/app/main.ipynb
+
 
 
 

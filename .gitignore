@@ -2,3 +2,4 @@
 *.zip
 *.xlsx
 !počet_obyvatel_ORP.xlsx
+!data_in_polygons.csv

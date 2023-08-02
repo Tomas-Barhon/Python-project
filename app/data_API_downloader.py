@@ -4,15 +4,14 @@ import requests
 import numpy as np
 from zipfile import ZipFile
 import geopandas as gp
-from shapely import geometry
 from shapely.geometry import Point
 
 class Downloader:
     """
     Downloader is a class for downloading data from kriminalita.policie API that are stored as geographical points with their attributes specifying them. It can work in two regimes. 
-    The first usecase it to download the data for one specific month and unzip it into csv file. The other usecase is meant for more complex analysis as the method get_multiple_years() 
+    The first usecase is to download the data for one specific month and unzip it into csv file. The other usecase is meant for more complex analysis as the method get_multiple_years() 
     downloads data for several available years and combines them together into one DataFrame. It is only designed to download data from this specific API for future analysis
-    and thus can be used in different project on its own.
+    and thus can be reused in different project on its own.
 
     ...
 
@@ -20,12 +19,10 @@ class Downloader:
     ----------
     year : int
         The year from which to choose the month you specify later. It has to be of an integer type from 2012 which is the first year that is available on the API. 
-        If non-integer is provided it will cause TypeError. If year < 2012 is provided Value Error will be raised.
 
     month : int
         The month from the specific year you want to obatin the data from. It has to be of an integer type and it has to be in the range from 1-12.
-        If non-integer is provided it will cause TypeError. If month does not fall into range 1-12 ValueError will be raised.
-        
+
     Methods
     -------
     get_request()
@@ -37,7 +34,8 @@ class Downloader:
         to unzip the downloaded zip file.  
 
     get_multiple_years(years)
-        Returns a DataFrame with all the data available 
+        Returns a DataFrame with all the data available for the specified years. It is enough that some months of the year do have available data. 
+        For instance when some months from year 2023 are not yet available just the months where it manages to get the data will be part of the DataFrame
 
         ...
 
@@ -47,7 +45,16 @@ class Downloader:
             List of years in integer form specifing the years from which you want to collect the data. The year has to be higer or equal to 2012 and in order to obtain the DataFrame
             at least some of the years have to have available data for them. Raises TypeError if non-integer list ist passed. Raises ValueError if any of the years if smaller than 2012.
 
+    Raises
+    ------
+    TypeError 
+        If non-integer year or month is provided.
+    ValueError 
+        If year < 2012 is provided.
+    ValueError 
+        If month does not fall into range 1-12.
     """
+
     def __init__(self, year, month) -> None:
         #check that year and month are integers and whether they are from the possible range
         if not isinstance(year, int):
@@ -68,9 +75,7 @@ class Downloader:
         self.year = str(year)
         if month in range(1,10):
             self.month = self.months_mapping[month - 1]
-        self.file_name = self.year + self.month
-
-        
+        self.file_name = self.year + self.month  
 
     def get_request(self):
         try:
@@ -99,7 +104,6 @@ class Downloader:
         
     def get_multiple_years(self,years):
         data = []
-
         #check that all years are integers greater than 2011
         for year in years:
             if not isinstance(year, int):
@@ -118,41 +122,119 @@ class Downloader:
             return pd.concat(data,axis=0,ignore_index=True)
         except:
             raise ValueError("You might have chosen years that do not have the data available yet. Try to check this on the kriminalita.policie API.")
-class Data_pipeline:
-    def __init__(self, crime_data, create_data = True) -> None:
+        
+class DataPipeline:
+    """
+    A class for processing and analyzing data related to crime and demographics.
 
+    This class provides methods for matching crime data to geographical polygons,
+    computing counts of crimes per polygon, preprocessing additional data,
+    and creating a final table for analysis.
+
+    Parameters
+    ----------
+    crime_data : pandas DataFrame
+        The crime data to be processed.
+
+    create_data : bool, optional
+        Flag to indicate whether to create data from the provided crime_data (default is True).
+
+    Attributes
+    ----------
+    create_data : bool
+        Flag indicating whether to create data.
+
+    people_in_polygons : pandas DataFrame
+        DataFrame containing population data for polygons.
+
+    polygons : GeoDataFrame
+        GeoDataFrame containing geographical polygon data.
+
+    crime_data : pandas DataFrame
+        DataFrame containing crime data.
+
+    data_in_polygons : pandas DataFrame
+        DataFrame containing matched crime data within polygons.
+
+    counts : pandas DataFrame
+        DataFrame containing counts of crimes per polygon.
+
+    paq_data : pandas DataFrame
+        DataFrame containing additional data for analysis.
+
+    final_table : pandas DataFrame
+        Final merged table for analysis.
+
+    Methods
+    -------
+    match_crime_data_to_polygons()
+        Match crime data to polygons.
+
+    compute_counts_per_polygon()
+        Compute counts of crimes per polygon.
+
+    preprocess_paq_data()
+        Preprocess additional data for analysis.
+
+    merge_final_table()
+        Merge final tables for analysis.
+
+    Returns
+    -------
+    final_table : pandas DataFrame
+        Final merged table for analysis.
+    """
+
+    def __init__(self, crime_data, create_data = True) -> None:
+        #load bool whether to load data
         self.create_data = create_data
+        #load ammount of people per ORP 
         self.people_in_polygons = pd.read_excel("počet_obyvatel_ORP.xlsx").dropna()
         self.people_in_polygons.reset_index(drop=True,inplace=True)
         self.people_in_polygons.rename(columns = {"Kraje / SO ORP":"ORP_NAZEV","Počet\nobyvatel\ncelkem":"AMMOUNT"},inplace = True)
+        #read the shapefile with the correct encoding
         geojson = gp.read_file("ORP_P.shp",encoding = "Windows-1250")
+        #change the epsg encoding
         self.polygons = geojson.to_crs(epsg=4326)
-
+        
+        #TODO:check that crime data was provided and isinstance(DataFrame) 
+        #if create_data = True load the provided criminal records
         if self.create_data:
             self.crime_data = crime_data
 
+        #TODO: write to README that data_in_polygons will be part of the repository in order to run the project exactly as we did
+        #if the data already exists load it from data_in_polygons.csv
         if not self.create_data:
             self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
+            #delete one column that gets unintentionally created
             self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
         
     def match_crime_data_to_polygons(self):
+        """
+        Match crime data to geographical polygons.
+
+        This method matches crime data points to corresponding polygons based on geographical coordinates.
+
+        """
+
         if self.create_data:
+            #filter the data for economic nature only
             self.crime_data = self.crime_data[(self.crime_data["relevance"] == 3) | (self.crime_data["relevance"] == 4)]
             self.crime_data = self.crime_data[(self.crime_data["state"] == 1) | (self.crime_data["state"] == 2) | (self.crime_data["state"] == 3) | (self.crime_data["state"] == 4)]
             self.crime_data= self.crime_data[(self.crime_data["types"] >= 18) & (self.crime_data["types"] <= 62)]
+            #create the new column for the name of the ORP
             self.crime_data["ORP"] = np.nan
+            #transform the longtitue and lattitude to Point class
             self.crime_data["points"] = self.crime_data.apply(lambda row: Point(row["x"],row["y"]),axis=1)
+            #iterate through all the points and find the polygon where they belong, write the name to the ORP column
             for indx,point in enumerate(self.crime_data["points"]):
                 for region_name,polygon in zip(self.polygons["NAZEV"],self.polygons["geometry"]):
                     if point.within(polygon):
                         self.crime_data.iloc[indx,8] = region_name
                         break
 
+            #load the final matched version to data_in_polygons
             self.data_in_polygons = self.crime_data
-
-        if not self.create_data:
-            self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
-            self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
         
     def compute_counts_per_polygon(self):
         counts = self.data_in_polygons["ORP"].value_counts().to_frame()
