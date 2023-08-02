@@ -116,6 +116,13 @@ class Downloader:
             pass
 
     def unzip_files_return_dataframe(self):
+        """
+        Unzips the downloaded ZIP file and returns the data as a Pandas DataFrame.
+
+        Returns:
+        - pandas.DataFrame or None: 
+            The unzipped data as a DataFrame, or None if the unzip operation fails.
+        """
         try:
             with ZipFile("./" + self.file_name + ".zip", 'r') as zObject:
                 # Extracting all the members of the zip 
@@ -128,12 +135,27 @@ class Downloader:
             return None
         
     def get_multiple_years(self,years):
+        """
+        Downloads data for multiple years and combines them into a single DataFrame.
+
+        Parameters:
+        years : list of int
+            A list of years for which to download the data.
+
+        Returns:
+        pandas.DataFrame : 
+            The combined data for the specified years as a DataFrame.
+
+        Raises :
+        ValueError
+            If the data for the specified years is not available on the API.
+        """
         data = []
         #check that all years are integers greater than 2011
         for year in years:
             if not isinstance(year, int):
                 raise TypeError("Expected an integer, but received {}.".format(type(year).__name__))
-            if isinstance(year, int) and isinstance(month, int) and year < 2012:
+            if year < 2012:
                 raise ValueError("The year has to be greater than 2012.")
             
         for year in years:
@@ -234,7 +256,8 @@ class DataPipeline:
         #load ammount of people per ORP 
         self.people_in_polygons = pd.read_excel("počet_obyvatel_ORP.xlsx").dropna()
         self.people_in_polygons.reset_index(drop=True,inplace=True)
-        self.people_in_polygons.rename(columns = {"Kraje / SO ORP":"ORP_NAZEV","Počet\nobyvatel\ncelkem":"AMMOUNT"},inplace = True)
+        self.people_in_polygons.rename(columns = {"Kraje / SO ORP":"ORP_NAZEV",
+                                                "Počet\nobyvatel\ncelkem":"AMMOUNT"},inplace = True)
         #read the shapefile with the correct encoding
         geojson = gp.read_file("ORP_P.shp",encoding = "Windows-1250")
         #change the epsg encoding
@@ -265,14 +288,19 @@ class DataPipeline:
 
         if self.create_data:
             #filter the data for economic nature only
-            self.crime_data = self.crime_data[(self.crime_data["relevance"] == 3) | (self.crime_data["relevance"] == 4)]
-            self.crime_data = self.crime_data[(self.crime_data["state"] == 1) | (self.crime_data["state"] == 2) | (self.crime_data["state"] == 3) | (self.crime_data["state"] == 4)]
+            self.crime_data = self.crime_data[(self.crime_data["relevance"] == 3) | 
+                                            (self.crime_data["relevance"] == 4)]
+            self.crime_data = self.crime_data[(self.crime_data["state"] == 1) |
+                                            (self.crime_data["state"] == 2) |
+                                            (self.crime_data["state"] == 3) | 
+                                            (self.crime_data["state"] == 4)]
             self.crime_data= self.crime_data[(self.crime_data["types"] >= 18) & (self.crime_data["types"] <= 62)]
             #create the new column for the name of the ORP
             self.crime_data["ORP"] = np.nan
             #transform the longtitue and lattitude to Point class
             self.crime_data["points"] = self.crime_data.apply(lambda row: Point(row["x"],row["y"]),axis=1)
-            #iterate through all the points and find the polygon where they belong, write the name to the ORP column
+            #iterate through all the points and find the polygon where they belong, write the name to the ORP column 
+            #and break finding of the region (point can only by part of one polygon)
             for indx,point in enumerate(self.crime_data["points"]):
                 for region_name,polygon in zip(self.polygons["NAZEV"],self.polygons["geometry"]):
                     if point.within(polygon):

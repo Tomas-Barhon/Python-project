@@ -34,11 +34,46 @@ Czech Statistical office - the data on the population in each ORP
 as the data was in quite a messy Excel file, we had to transform it manually and the new table is now to your disposal in our repository (app/počet_obyvatel_ORP.xlsx) and can be used in other projects with similar nature. It makes it easier to share the project with others.
 <br/>
 
-## How to install the project with pip
+## How to install the project
 <br/>
 
 ## How to use the modules seperately for your own project
 <br/>
+
+### Downloader (check how_to_downloader.ipynb)
+Downloader is a module to download data from the https://kriminalita.policie.cz/ API. It is designed to either download data for one specific month or for multiple years and return them to user as pandas.DataFrame.
+<br/>
+In order to use Downloader module you first need to import it using the following command:
+
+<pre>
+```python
+from data_API_downloader import Downloader
+```
+</pre>
+
+Now to obtain the criminal records for one specific month you need to run the following lines of code.
+
+<pre>
+```python
+download = Downloader(year= 2012,month = 5)
+#send the get request to obtain the zip file
+download.get_request()
+#unzip the downloaded file and get .csv file for the month
+download.unzip_files_return_dataframe()
+```
+</pre>
+
+You can freely adjust the year and month. It is important that the year and month are numbers in integer form. The data is available from year 2012, that means you have to enter year higher or equal to 2012 and month has to clearly be from range 1-12 otherwise an error will be returned.
+<br/>
+
+In order to use Downloader to download data for multiple years you need to run the following line of code.
+<pre>
+```python
+#How to use Downloader to download data for multiple years
+crime_data = download.get_multiple_years(years = [2012,2013,2014])
+```
+</pre>
+You can adjust the years you want to download the data for. Mind that again years must be a list of integers from 2012 and higher. It is important that you specify at least one year with some available data otherwise an error will be raised. For example specifing years = [5000,5001] will result in a specific ValueError.
 
 ## Userguide for the project
 
