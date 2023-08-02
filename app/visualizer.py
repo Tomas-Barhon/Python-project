@@ -48,6 +48,9 @@ class VisualizerOfCriminalData:
 
 
     def get_folium_maps(self):
+        """
+        Returns a list of 6 choropleth Folium maps that can be shown by the user in Jupyter simply as returned_list[i], while i is an int from 0-5.
+        """
         map_buffer = [self.relative_crime_map,self.foreclosure_map,self.dropout_rate_map,self.without_highschool_map,self.benefits_map,self.criminality_risk_index_map]
         column_name_buffer = ["Počet kriminálních aktivit per capita","Lidé v exekuci (2021) [%]","Propadání (průměr 2015–2021) [%]",
                             "Podíl lidí bez středního vzdělání (2021) [%]","Domácnosti čerpající přídavek na živobytí (2020) [%]","Criminality risk index"]
@@ -70,6 +73,10 @@ class VisualizerOfCriminalData:
         return map_output_list
     
     def show_scatter_correlations(self):
+        """
+        Plots 4 subplots each of them being one of the explanatory variables against the "Počet kriminálních aktivit per capita" acting as the response variable. 
+        The method will work only if the data_table provided to the constructor was in the correct format.
+        """
         fig, axes = plt.subplots(nrows=2, ncols=2,figsize=(10,10))
         sns.regplot(data=self.data_table, x="Lidé v exekuci (2021) [%]",y="Počet kriminálních aktivit per capita", color="blue", scatter_kws={'alpha': 0.5}, line_kws={'color': 'red'}, ax=axes[0,0])
         sns.regplot(data=self.data_table, x="Podíl lidí bez středního vzdělání (2021) [%]",y="Počet kriminálních aktivit per capita", color="blue", scatter_kws={'alpha': 0.5}, line_kws={'color': 'red'}, ax=axes[0,1])
@@ -78,5 +85,9 @@ class VisualizerOfCriminalData:
         plt.show()
         
     def show_correlation_heatmap(self):
+        """
+        Plots correlation heatmap of the explanatory variables with the response variable "Počet kriminálních aktivit per capita".
+        The method will work only if the data_table provided to the constructor was in the correct format.
+        """
         sns.heatmap(self.data_table[["Počet kriminálních aktivit per capita","Lidé v exekuci (2021) [%]","Propadání (průměr 2015–2021) [%]",
                             "Podíl lidí bez středního vzdělání (2021) [%]","Domácnosti čerpající přídavek na živobytí (2020) [%]"]].corr()[["Počet kriminálních aktivit per capita"]].sort_values(by="Počet kriminálních aktivit per capita"), linewidths=1, annot=True)

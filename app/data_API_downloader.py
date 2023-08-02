@@ -6,6 +6,31 @@ from zipfile import ZipFile
 import geopandas as gp
 from shapely.geometry import Point
 
+class MethodOrderError(Exception):
+    """Custom exception class for calling methods in the wrong order."""
+
+    def __init__(self, method_name, expected_order):
+        """
+        Initialize the MethodOrderError.
+
+        Parameters:
+        - method_name (str): The name of the method that was called.
+        - expected_order (list): The list of methods that should have been called in order.
+        
+        """
+        self.method_name = method_name
+        self.expected_order = expected_order
+
+    def __str__(self):
+        """
+        Return a string representation of the error.
+
+        Returns:
+        - str: A formatted error message.
+        """
+        return f"MethodOrderError: '{self.method_name}' was called out of order.\nExpected order: {self.expected_order}"
+
+
 class Downloader:
     """
     Downloader is a class for downloading data from kriminalita.policie API that are stored as geographical points with their attributes specifying them. It can work in two regimes. 
@@ -133,11 +158,11 @@ class DataPipeline:
 
     Parameters
     ----------
-    crime_data : pandas DataFrame
-        The crime data to be processed.
+    crime_data : pandas DataFrame, None
+        The crime data to be processed. If create_data = False crime_data must be set to None (default is None). 
 
     create_data : bool, optional
-        Flag to indicate whether to create data from the provided crime_data (default is True).
+        Flag to indicate whether to create data from the provided crime_data or to load them from data_in_polygons (default is False).
 
     Attributes
     ----------
@@ -151,19 +176,19 @@ class DataPipeline:
         GeoDataFrame containing geographical polygon data.
 
     crime_data : pandas DataFrame
-        DataFrame containing crime data.
+        DataFrame containing crime data. The data from kriminalita.policie API.
 
     data_in_polygons : pandas DataFrame
-        DataFrame containing matched crime data within polygons.
+        DataFrame containing matched crime data within corresponding polygons.
 
     counts : pandas DataFrame
         DataFrame containing counts of crimes per polygon.
 
     paq_data : pandas DataFrame
-        DataFrame containing additional data for analysis.
+        DataFrame containing additional data from PAQ research for further analysis.
 
     final_table : pandas DataFrame
-        Final merged table for analysis.
+        Final merged table prepared for analysis and visualizations.
 
     Methods
     -------
@@ -183,9 +208,27 @@ class DataPipeline:
     -------
     final_table : pandas DataFrame
         Final merged table for analysis.
+    
+    Raises
+    ------
+    ValueError
+        If you want to create the data but did not provide the pd.DataFrame
+    ValueError
+        If you set create_data to anything different from bool type.
+    FileNotFoundError
+        If you set create_data = False but do not have data_in_polygons.csv in your directory.
+    FileNotFoundError
+        When you call preprocess_paq_data but do not have Data-pro-Python-DataPAQ.csv in your directory.
+    MethodOrderError
+        When you do not follow the correct order how to call the methods.
     """
 
-    def __init__(self, crime_data, create_data = True) -> None:
+    def __init__(self, crime_data = None, create_data = False) -> None:
+        if not isinstance(create_data, bool):
+            raise ValueError("create_data must be set to True or False.")
+        if create_data and not isinstance(crime_data,pd.DataFrame):
+            raise ValueError("If you want to create data you need to provide the crime data in a pd.DataFrame created by the downloader.")
+        
         #load bool whether to load data
         self.create_data = create_data
         #load ammount of people per ORP 
@@ -205,10 +248,13 @@ class DataPipeline:
         #TODO: write to README that data_in_polygons will be part of the repository in order to run the project exactly as we did
         #if the data already exists load it from data_in_polygons.csv
         if not self.create_data:
-            self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
-            #delete one column that gets unintentionally created
-            self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
-        
+            try:
+                self.data_in_polygons = pd.read_csv("data_in_polygons.csv")
+                #delete one column that gets unintentionally created
+                self.data_in_polygons = self.data_in_polygons.drop(["Unnamed: 0"],axis = 1)
+            except:
+                raise FileNotFoundError("File data_in_polygons.csv is probably not in your directory.")
+            
     def match_crime_data_to_polygons(self):
         """
         Match crime data to geographical polygons.
@@ -237,12 +283,39 @@ class DataPipeline:
             self.data_in_polygons = self.crime_data
         
     def compute_counts_per_polygon(self):
-        counts = self.data_in_polygons["ORP"].value_counts().to_frame()
-        counts.reset_index(inplace=True)
-        self.counts = counts.rename(columns = {'index':'ORP',"ORP":"counts"})
+        """
+        Compute counts of crimes per polygon.
+
+        This method calculates the counts of crimes within each polygon.
+
+        Raises
+        ------
+        MethodOrderError
+            When you do not follow the correct order how to call the methods.
+        """
+        try:
+            counts = self.data_in_polygons["ORP"].value_counts().to_frame()
+            counts.reset_index(inplace=True)
+            self.counts = counts.rename(columns = {'index':'ORP',"ORP":"counts"})
+        except:
+            raise MethodOrderError("compute_counts_per_polygon",["match_crime_data_to_polygons", "compute_counts_per_polygon", "preprocess_paq_data","merge_final_table"])
         
     def preprocess_paq_data(self):
-        self.paq_data = pd.read_csv("Data-pro-Python-DataPAQ.csv")
+        """
+        Preprocess additional data for analysis.
+
+        This method preprocesses additional data for integration into the analysis.
+
+        Raises
+        ------
+        FileNotFoundError
+            When you call preprocess_paq_data but do not have Data-pro-Python-DataPAQ.csv in your directory.
+        """
+        try:
+            self.paq_data = pd.read_csv("Data-pro-Python-DataPAQ.csv")
+        except:
+            raise FileNotFoundError("You probably do not have Data-pro-Python-DataPAQ.csv in your directory.")
+        
         self.paq_data.drop(['Propadání (průměr 2015–2021) / Průměr ČR [%]',
        'Propadání (průměr 2015–2021) / Průměr kraje [%]',
        'Propadání (průměr 2015–2021) / Průměr okresu [%]',
@@ -261,16 +334,34 @@ class DataPipeline:
         self.paq_data.replace(to_replace="Praha",value="Hlavní město Praha",inplace=True)
 
     def merge_final_table(self):
-        self.final_table = self.polygons.merge(self.counts,how="left",left_on=["NAZEV"],right_on=["ORP"])
-        self.final_table = self.final_table.merge(self.paq_data,how="left",left_on=["NAZEV"],right_on=["Název ORP"])
-        self.final_table = self.final_table.merge(self.people_in_polygons,how="left",left_on=["NAZEV"],right_on=["ORP_NAZEV"])
-        self.final_table = self.final_table.fillna(0)
-        self.final_table["Počet kriminálních aktivit per capita"] = self.final_table["counts"]/self.final_table["AMMOUNT"]
-        self.final_table = self.final_table.replace(to_replace=np.inf,value=0)
-        self.final_table.drop(["NAZEV","counts","Název ORP","ORP_NAZEV","AMMOUNT"],axis = 1,inplace=True)
-        weights = self.final_table.corr()[["Počet kriminálních aktivit per capita"]]
-        weights.drop(["Počet kriminálních aktivit per capita"],axis = 0,inplace=True)
-        weights = weights.values
-        self.final_table["Criminality risk index"] = self.final_table.apply(lambda row: (row["Lidé v exekuci (2021) [%]"]*weights[0] + row["Podíl lidí bez středního vzdělání (2021) [%]"]*weights[1] +
-                                                        row["Domácnosti čerpající přídavek na živobytí (2020) [%]"]*weights[2] + row["Propadání (průměr 2015–2021) [%]"]*weights[3])[0],axis=1)
-        return self.final_table
+        """
+        Merge final tables for analysis.
+
+        This method merges all previously created data tables to create a final table for analysis and visualizations.
+
+        Returns
+        -------
+        pandas DataFrame
+            The final merged table for analysis.
+
+        Raises
+        ------
+        MethodOrderError
+            When you do not follow the correct order how to call the methods.
+        """
+        try:
+            self.final_table = self.polygons.merge(self.counts,how="left",left_on=["NAZEV"],right_on=["ORP"])
+            self.final_table = self.final_table.merge(self.paq_data,how="left",left_on=["NAZEV"],right_on=["Název ORP"])
+            self.final_table = self.final_table.merge(self.people_in_polygons,how="left",left_on=["NAZEV"],right_on=["ORP_NAZEV"])
+            self.final_table = self.final_table.fillna(0)
+            self.final_table["Počet kriminálních aktivit per capita"] = self.final_table["counts"]/self.final_table["AMMOUNT"]
+            self.final_table = self.final_table.replace(to_replace=np.inf,value=0)
+            self.final_table.drop(["NAZEV","counts","Název ORP","ORP_NAZEV","AMMOUNT"],axis = 1,inplace=True)
+            weights = self.final_table.corr()[["Počet kriminálních aktivit per capita"]]
+            weights.drop(["Počet kriminálních aktivit per capita"],axis = 0,inplace=True)
+            weights = weights.values
+            self.final_table["Criminality risk index"] = self.final_table.apply(lambda row: (row["Lidé v exekuci (2021) [%]"]*weights[0] + row["Podíl lidí bez středního vzdělání (2021) [%]"]*weights[1] +
+                                                            row["Domácnosti čerpající přídavek na živobytí (2020) [%]"]*weights[2] + row["Propadání (průměr 2015–2021) [%]"]*weights[3])[0],axis=1)
+            return self.final_table
+        except:
+            raise MethodOrderError("compute_counts_per_polygon",["match_crime_data_to_polygons", "compute_counts_per_polygon", "preprocess_paq_data","merge_final_table"])
