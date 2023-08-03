@@ -138,15 +138,15 @@ visualizer.show_scatter_correlations()
 visualizer.show_correlation_heatmap()
 </pre>
 
-## Userguide for the project
-
+## Userguide for the project (check "main.ipynb" or just open it in nbviewer down below)
+In order to run the same code as we did you can follow exactly the notebook main.ipynb. It is really similar to how_to_visualizer but you can see all the visualizations and all our outputs. If you followed all the previous instructions you will understand what is going on in the code. One thing to note is that we now run the code in the create_data = False regime. What we did previously is that we saved the data downloaded by Downloader for years 2021-2023 into a csv file which is now part of the repository as data_in_polygons.csv. The main reason for that is that it takes quite a lot of time to match cca 500 000 records to their polygons so to speed up our process we saved it for the years we aimed to analyse. You can of course always download the data with Downloader and then pass them into DataPipeline as we already explained in the previous tutorials but to make it easy for people that just want to run it exactly as we did we made this choice.
 <br/>
 
 ## How to open the notebook with the Folium maps displayed
 <br/>
 In order to open the notebook in your web-browser and be able to see all the visualizations you need to open the notebook in nbviewer. 
 <br/>
-You can find it on the following link:
+You can find it on the following link: (if you want to open other notebooks just change the name in the end)
 <br/>
 https://nbviewer.org/github/Tomas-Barhon/Python-project/blob/main/app/main.ipynb
 
