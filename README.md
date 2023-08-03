@@ -96,8 +96,47 @@ table.head(10)
 </pre>
 Make sure to use more years in order to obtain enough observations so that there is at least one observation for each ORP.
 
-### Visualizer (check "how_to_visualizer.ipynb")
+### VisualizerOfCriminalData (check "how_to_visualizer.ipynb")
+VisualizerOfCriminalData is a module which can be used to visualize the data from the final table created from DataPipeline. It is designed to create 3 types of visualization we have found useful in our geographical analysis. The class can return Folium choropleth maps for all the parameters we used in our analysis, it can show scatter plots with regression line for the response variable against all independent variables and it can show correlation heatmap which compares the level of correlation among our variables.
 
+<br/>
+In order to use visualizer the user has to pass the data table created by DataPipeline. For our purpouses we will not download and create our data but we will use the create_data = False attribute in order to demonstrate the usage of the class. Now you need to make sure that you have the data files that were part of the GitHub respoitory and you can proceed with the following commands.
+
+<pre>
+from data_API_downloader import DataPipeline
+from visualizer import VisualizerOfCriminalData
+pipeline = DataPipeline(crime_data = None, create_data = False)
+pipeline.match_crime_data_to_polygons()
+pipeline.compute_counts_per_polygon()
+pipeline.preprocess_paq_data()
+table = pipeline.merge_final_table()
+</pre>
+
+And we initialize visualizer and obtain the Folium maps as a list of 6 objects.
+
+<pre>
+#Now we initialize the visualizer with the data created from pipeline
+visualizer = VisualizerOfCriminalData(table)
+maps = visualizer.get_folium_maps()
+labels = visualizer.english_legend_name_buffer
+</pre>
+
+Now to show these maps with their labels in jupyter user can simply call the following code where he can exchange the number 0 for any number up to 5.
+
+<pre>
+print(labels[0])
+maps[0]
+</pre>
+
+Finally user can easily also call the last two methods that show different visualizations of correlation between the variables.
+
+<pre>
+visualizer.show_scatter_correlations()
+</pre>
+
+<pre>
+visualizer.show_correlation_heatmap()
+</pre>
 
 ## Userguide for the project
 
