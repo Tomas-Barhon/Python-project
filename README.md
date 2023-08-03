@@ -37,6 +37,49 @@ as the data was in quite a messy Excel file, we had to transform it manually and
 ## How to install the project
 <br/>
 
+### Getting Started
+
+To get started with this project, you'll need to clone the repository to your local machine. Follow the steps below:
+
+#### Prerequisites
+
+Before you begin, make sure you have Git installed on your machine. If you don't have Git installed, you can download it from the official website: [Git Downloads](https://git-scm.com/downloads).
+
+#### Cloning the Repository
+
+1. Open your terminal or command prompt.
+
+2. Change the current working directory to the location where you want to clone the repository. For example, if you want to clone the repository to your desktop, you can use the following command:
+
+<pre>
+cd your_repository
+</pre>
+Now, you're ready to clone the repository. Use the following command to clone the repository:
+<pre>
+git clone https://github.com/Tomas-Barhon/Python-project.git
+</pre>
+
+Press Enter, and Git will clone the repository to your local machine.
+
+#### Accessing the Repository
+After cloning the repository, you can access its contents by navigating to the repository's directory using the cd command. For example:
+<pre>
+cd Python-project
+</pre>
+
+### Creating virtual environment
+We recommend creating a virtual environment for our project with either Conda or Venv. This is only a recommendation and you can just do all of the following steps in your global (system-wide) python environment.
+
+### Installing libraries
+In order to install all the necessary libraries you can either activate your virtual environment or proceed in the global one.
+<br/>
+Now you can install all of the libraries either manually or by navigating to the respository of the project and using its requirements.txt file. You can do this by typing these lines into your command prompt.
+
+<pre>
+pip install -r requirements.txt
+</pre>
+
+Now you should be ready to run the whole project without any trouble.
 ## How to use the modules seperately for your own project
 <br/>
 
