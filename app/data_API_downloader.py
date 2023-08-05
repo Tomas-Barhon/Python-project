@@ -101,8 +101,8 @@ class Downloader:
         self._month = str(month)
         self._year = str(year)
         if month in range(1,10):
-            self.month = self._months_mapping[month - 1]
-        self._file_name = self._year + self.month  
+            self._month = self._months_mapping[month - 1]
+        self._file_name = self._year + self._month  
 
     def get_request(self):
         try:
@@ -113,8 +113,9 @@ class Downloader:
             if self._status_code == 200:
                 with open(self._file_name + ".zip",'wb') as output_file:
                     output_file.write(r.content)
-        except:
+        except Exception as e:
             print("Something went wrong, try to check your previous steps.")
+            print(e)
             pass
 
     def unzip_files_return_dataframe(self):
@@ -126,12 +127,12 @@ class Downloader:
             The unzipped data as a DataFrame, or None if the unzip operation fails.
         """
         try:
-            with ZipFile("./" + self.file_name + ".zip", 'r') as zObject:
+            with ZipFile("./" + self._file_name + ".zip", 'r') as zObject:
                 # Extracting all the members of the zip 
                 # into a specific location.
                 zObject.extractall(
                     path="./")
-                return pd.read_csv(self.file_name + ".csv")
+                return pd.read_csv(self._file_name + ".csv")
         except:
             print("Downloader was not able to unzip the file. It might have been renamed or deleted try to repeat your previous steps and follow the instructions carefully.")
             return None
@@ -162,7 +163,7 @@ class Downloader:
             
         for year in years:
             for month in self._months_mapping:
-                self.file_name = f"{year}" + month
+                self._file_name = f"{year}" + month
                 file = self.get_request()
                 unzipped_file = self.unzip_files_return_dataframe()
                 if isinstance(unzipped_file,pd.DataFrame):
@@ -396,4 +397,4 @@ class DataPipeline:
             
             return self.final_table
         except:
-            raise MethodOrderError("compute_counts_per_polygon",["match_crime_data_to_polygons", "compute_counts_per_polygon", "preprocess_paq_data","merge_final_table"])
+            raise MethodOrderError("merge_final_table",["match_crime_data_to_polygons", "compute_counts_per_polygon", "preprocess_paq_data","merge_final_table"])
