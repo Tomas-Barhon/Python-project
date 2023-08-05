@@ -6,6 +6,12 @@ from zipfile import ZipFile
 import geopandas as gp
 from shapely.geometry import Point
 
+#small function to get five worst for each parameter
+def get_five_worst(table,name):
+    n_largest = table[name].nlargest(5)
+    names = table.loc[n_largest.index, "ORP"]
+    return pd.DataFrame({"ORP": names, "Values": n_largest})
+
 # Error to be raised when the user does call the methods in th wrong order
 class MethodOrderError(Exception):
     """Custom exception class for calling methods in the wrong order."""
