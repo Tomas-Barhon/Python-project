@@ -34,6 +34,14 @@ Czech Statistical office - the data on the population in each ORP
 as the data was in quite a messy Excel file, we had to transform it manually and the new table is now to your disposal in our repository (app/počet_obyvatel_ORP.xlsx) and can be used in other projects with similar nature. It makes it easier to share the project with others.
 <br/>
 
+## Project report
+<br/>
+If you want to learn about our project and our findings in form of various visualizations make sure to read through the project report which can be found at:
+
+<pre>
+Python-project/Project_Report/project_report.pdf
+</pre>
+
 ## How to install the project
 <br/>
 
@@ -49,7 +57,7 @@ Before you begin, make sure you have Git installed on your machine. If you don't
 
 1. Open your terminal or command prompt.
 
-2. Change the current working directory to the location where you want to clone the repository. For example, if you want to clone the repository to your desktop, you can use the following command:
+2. Change the current working directory to the location where you want to clone the repository. For example, if you want to clone the repository to your_repository, you can use the following command:
 
 <pre>
 cd your_repository
@@ -84,7 +92,7 @@ Now you should be ready to run the whole project without any trouble.
 <br/>
 
 ### Downloader (check "how_to_downloader.ipynb")
-Downloader is a module to download data from the https://kriminalita.policie.cz/ API. It is designed to either download data for one specific month or for multiple years and return them to user as pandas.DataFrame.
+Downloader is a class to download data from the https://kriminalita.policie.cz/ API. It is designed to either download data for one specific month or for multiple years and return them to user as pandas.DataFrame.
 <br/>
 In order to use Downloader module you first need to import it using the following command:
 
@@ -113,7 +121,7 @@ crime_data = download.get_multiple_years(years = [2012,2013,2014])
 You can adjust the years you want to download the data for. Mind that again years must be a list of integers from 2012 and higher. It is important that you specify at least one year with some available data otherwise an error will be raised. For example specifing years = [5000,5001] will result in a specific ValueError.
 
 ### DataPipeline (check "how_to_data_pipeline.ipynb")
-DataPipeline is a module created to process data created by Downloader and create a final table where each ORP does have all of the 6 parameters and can be used for further analysis of users choice. Thus it can be freely used in any other project requiring such data on the level of ORP.
+DataPipeline is a class created to process data created by Downloader and create a final table where each ORP does have all of the 6 parameters and can be used for further analysis of users choice. Thus it can be freely used in any other project requiring such data on the level of ORP.
 <br/>
 First, we need to import the two modules with the following command:
 
@@ -140,7 +148,7 @@ table.head(10)
 Make sure to use more years in order to obtain enough observations so that there is at least one observation for each ORP.
 
 ### VisualizerOfCriminalData (check "how_to_visualizer.ipynb")
-VisualizerOfCriminalData is a module which can be used to visualize the data from the final table created from DataPipeline. It is designed to create 3 types of visualization we have found useful in our geographical analysis. The class can return Folium choropleth maps for all the parameters we used in our analysis, it can show scatter plots with regression line for the response variable against all independent variables and it can show correlation heatmap which compares the level of correlation among our variables.
+VisualizerOfCriminalData is a class which can be used to visualize the data from the final table created from DataPipeline. It is designed to create 3 types of visualization we have found useful in our geographical analysis. The class can return Folium choropleth maps for all the parameters we used in our analysis, it can show scatter plots with regression line for the response variable against all independent variables and it can show correlation heatmap which compares the level of correlation among our variables.
 
 <br/>
 In order to use visualizer the user has to pass the data table created by DataPipeline. For our purpouses we will not download and create our data but we will use the create_data = False attribute in order to demonstrate the usage of the class. Now you need to make sure that you have the data files that were part of the GitHub respoitory and you can proceed with the following commands.
@@ -192,6 +200,10 @@ In order to open the notebook in your web-browser and be able to see all the vis
 You can find it on the following link: (if you want to open other notebooks just change the name in the end)
 <br/>
 https://nbviewer.org/github/Tomas-Barhon/Python-project/blob/main/app/main.ipynb
+
+## Disclaimer & final notes
+<br/>
+Although we tried to make our code quite user input proof there is a lot of places where it might fail for other reasons. That is the reason why we did provide such a detailed tutorial, how does the code work and how it should be used. Also we do not cover everything from downloading python creating a virtual environment and how to make it a jupyter kernel. We assume that the user has some knowledge of these types of technologies. We will be happy for any feedback and pull requests to the repository. Our goal was to not even do our own project but provide modules that can be useful to someone else doing similar type of analysis. We would like to thank all of the data sources that we used. We had to share some of the data in transformed form as part of our repository for already mentioned purpouses (time, exact data source for our project, not everyone has public API). The last note is that we used pytest for our testing but the tests can be freely ignored by user who will follow the guidance above.
 
 
 

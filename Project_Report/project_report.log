@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.23)  1 AUG 2023 09:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.23)  5 AUG 2023 22:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -411,66 +411,98 @@ Overfull \hbox (17.62482pt too wide) in paragraph at lines 26--37
 [1
 
 {c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-<Criminality_per_capita.png, id=61, 592.2125pt x 372.39125pt>
+<Criminality_per_capita.png, id=59, 592.2125pt x 372.39125pt>
 File: Criminality_per_capita.png Graphic file (type png)
 <use Criminality_per_capita.png>
-Package pdftex.def Info: Criminality_per_capita.png  used on input line 80.
+Package pdftex.def Info: Criminality_per_capita.png  used on input line 76.
 (pdftex.def)             Requested size: 364.19667pt x 229.01642pt.
-<people_in_foreclosure.png, id=63, 593.21625pt x 372.39125pt>
+<Worst 5 ORP in criminal activity per capita.png, id=61, 462.528pt x 346.896pt>
+File: Worst 5 ORP in criminal activity per capita.png Graphic file (type png)
+<use Worst 5 ORP in criminal activity per capita.png>
+Package pdftex.def Info: Worst 5 ORP in criminal activity per capita.png  used on input line 80.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+ [4 <./Criminality_per_capita.png>]
+<people_in_foreclosure.png, id=70, 593.21625pt x 372.39125pt>
 File: people_in_foreclosure.png Graphic file (type png)
 <use people_in_foreclosure.png>
 Package pdftex.def Info: people_in_foreclosure.png  used on input line 85.
 (pdftex.def)             Requested size: 364.19667pt x 228.63002pt.
-<dropout.png, id=64, 591.20876pt x 372.39125pt>
+<Worst 5 ORP in foreclosure rates.png, id=71, 462.528pt x 346.896pt>
+File: Worst 5 ORP in foreclosure rates.png Graphic file (type png)
+<use Worst 5 ORP in foreclosure rates.png>
+Package pdftex.def Info: Worst 5 ORP in foreclosure rates.png  used on input line 86.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+<dropout.png, id=72, 591.20876pt x 372.39125pt>
 File: dropout.png Graphic file (type png)
 <use dropout.png>
-Package pdftex.def Info: dropout.png  used on input line 86.
+Package pdftex.def Info: dropout.png  used on input line 87.
 (pdftex.def)             Requested size: 364.19667pt x 229.4028pt.
-<without_high_school.png, id=65, 589.20125pt x 374.39874pt>
+<Worst 5 ORP in the dropout rates.png, id=73, 462.528pt x 346.896pt>
+File: Worst 5 ORP in the dropout rates.png Graphic file (type png)
+<use Worst 5 ORP in the dropout rates.png>
+Package pdftex.def Info: Worst 5 ORP in the dropout rates.png  used on input line 88.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+<without_high_school.png, id=74, 589.20125pt x 374.39874pt>
 File: without_high_school.png Graphic file (type png)
 <use without_high_school.png>
-Package pdftex.def Info: without_high_school.png  used on input line 87.
+Package pdftex.def Info: without_high_school.png  used on input line 89.
 (pdftex.def)             Requested size: 364.19667pt x 231.42784pt.
-<allowances.png, id=66, 592.2125pt x 372.39125pt>
+<Worst 5 ORP in the share of people without completed high school.png, id=75, 462.528pt x 346.896pt>
+File: Worst 5 ORP in the share of people without completed high school.png Graphic file (type png)
+<use Worst 5 ORP in the share of people without completed high school.png>
+Package pdftex.def Info: Worst 5 ORP in the share of people without completed high school.png  used on input line 90.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+<allowances.png, id=76, 592.2125pt x 372.39125pt>
 File: allowances.png Graphic file (type png)
 <use allowances.png>
-Package pdftex.def Info: allowances.png  used on input line 88.
+Package pdftex.def Info: allowances.png  used on input line 91.
 (pdftex.def)             Requested size: 364.19667pt x 229.01642pt.
- [4 <./Criminality_per_capita.png> <./people_in_foreclosure.png>] [5 <./dropout.png> <./without_high_school.png> <./allowances.png>]
-<risk_index.png, id=82, 595.22375pt x 372.39125pt>
+<Worst 5 ORP in households on allowances.png, id=77, 462.528pt x 346.896pt>
+File: Worst 5 ORP in households on allowances.png Graphic file (type png)
+<use Worst 5 ORP in households on allowances.png>
+Package pdftex.def Info: Worst 5 ORP in households on allowances.png  used on input line 92.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+ [5 <./Worst 5 ORP in criminal activity per capita.png> <./people_in_foreclosure.png>] [6 <./Worst 5 ORP in foreclosure rates.png> <./dropout.png>] [7 <./Worst 5 ORP in the dropout rates.png> <./without_high_school.png>] [8 <./Worst 5 ORP in the share of people without completed high school.png> <./allowances.png>]
+<risk_index.png, id=104, 802.49812pt x 493.0922pt>
 File: risk_index.png Graphic file (type png)
 <use risk_index.png>
-Package pdftex.def Info: risk_index.png  used on input line 93.
-(pdftex.def)             Requested size: 364.19667pt x 227.85156pt.
-<corr1.png, id=83, 307.1475pt x 290.08376pt>
+Package pdftex.def Info: risk_index.png  used on input line 97.
+(pdftex.def)             Requested size: 364.19667pt x 223.78548pt.
+<Regions with highest Criminality risk index.png, id=105, 462.528pt x 346.896pt>
+File: Regions with highest Criminality risk index.png Graphic file (type png)
+<use Regions with highest Criminality risk index.png>
+Package pdftex.def Info: Regions with highest Criminality risk index.png  used on input line 98.
+(pdftex.def)             Requested size: 364.19667pt x 273.16086pt.
+ [9 <./Worst 5 ORP in households on allowances.png> <./risk_index.png>]
+<corr1.png, id=113, 307.1475pt x 290.08376pt>
 File: corr1.png Graphic file (type png)
 <use corr1.png>
-Package pdftex.def Info: corr1.png  used on input line 98.
+Package pdftex.def Info: corr1.png  used on input line 103.
 (pdftex.def)             Requested size: 364.19667pt x 343.98671pt.
-<corr2.png, id=84, 305.14pt x 284.06125pt>
+<corr2.png, id=114, 305.14pt x 284.06125pt>
 File: corr2.png Graphic file (type png)
 <use corr2.png>
-Package pdftex.def Info: corr2.png  used on input line 99.
+Package pdftex.def Info: corr2.png  used on input line 104.
 (pdftex.def)             Requested size: 364.19667pt x 339.0513pt.
-<corr3.png, id=85, 304.13625pt x 297.11pt>
+<corr3.png, id=115, 304.13625pt x 297.11pt>
 File: corr3.png Graphic file (type png)
 <use corr3.png>
-Package pdftex.def Info: corr3.png  used on input line 100.
+Package pdftex.def Info: corr3.png  used on input line 105.
 (pdftex.def)             Requested size: 364.19667pt x 355.79124pt.
-<corr4.png, id=86, 431.6125pt x 409.53pt>
+<corr4.png, id=116, 431.6125pt x 409.53pt>
 File: corr4.png Graphic file (type png)
 <use corr4.png>
-Package pdftex.def Info: corr4.png  used on input line 101.
+Package pdftex.def Info: corr4.png  used on input line 106.
 (pdftex.def)             Requested size: 364.19667pt x 345.57132pt.
- [6 <./risk_index.png>] [7 <./corr1.png> <./corr2.png>] [8 <./corr3.png> <./corr4.png>]
-<corr_index.png, id=107, 632.3625pt x 289.08pt>
-File: corr_index.png Graphic file (type png)
-<use corr_index.png>
-Package pdftex.def Info: corr_index.png  used on input line 106.
-(pdftex.def)             Requested size: 364.19667pt x 166.49318pt.
-
+ [10 <./Regions with highest Criminality risk index.png> <./corr1.png>] [11 <./corr2.png> <./corr3.png>]
+<heat_map.png, id=130, 661.72218pt x 308.65312pt>
+File: heat_map.png Graphic file (type png)
+<use heat_map.png>
+Package pdftex.def Info: heat_map.png  used on input line 111.
+(pdftex.def)             Requested size: 364.19667pt x 169.87276pt.
+ [12 <./corr4.png> <./heat_map.png>]
 No file project_report.bbl.
-[9 <./corr_index.png>] (./project_report.aux)
+[13] (./project_report.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-06-16>
@@ -479,18 +511,18 @@ Package rerunfilecheck Info: File `project_report.out' has not changed.
 (rerunfilecheck)             Checksum: 356AC1F85BE244B90751657CB4E3499A;587.
  ) 
 Here is how much of TeX's memory you used:
- 13161 strings out of 475723
- 210198 string characters out of 5785846
- 1859763 words of memory out of 5000000
- 33735 multiletter control sequences out of 15000+600000
+ 13210 strings out of 475723
+ 212435 string characters out of 5785846
+ 1861763 words of memory out of 5000000
+ 33772 multiletter control sequences out of 15000+600000
  520647 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,9n,79p,948b,534s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,79p,1033b,534s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><c:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on project_report.pdf (9 pages, 10068707 bytes).
+Output written on project_report.pdf (13 pages, 9429512 bytes).
 PDF statistics:
- 148 PDF objects out of 1000 (max. 8388607)
- 105 compressed objects within 2 object streams
- 39 named destinations out of 1000 (max. 500000)
- 104 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 187 PDF objects out of 1000 (max. 8388607)
+ 128 compressed objects within 2 object streams
+ 51 named destinations out of 1000 (max. 500000)
+ 134 words of extra memory for PDF output out of 10000 (max. 10000000)
 
