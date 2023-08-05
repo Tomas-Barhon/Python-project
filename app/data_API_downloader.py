@@ -6,6 +6,7 @@ from zipfile import ZipFile
 import geopandas as gp
 from shapely.geometry import Point
 
+# Error to be raised when the user does call the methods in th wrong order
 class MethodOrderError(Exception):
     """Custom exception class for calling methods in the wrong order."""
 
@@ -35,7 +36,7 @@ class Downloader:
     """
     Downloader is a class for downloading data from kriminalita.policie API that are stored as geographical points with their attributes specifying them. It can work in two regimes. 
     The first usecase is to download the data for one specific month and unzip it into csv file. The other usecase is meant for more complex analysis as the method get_multiple_years() 
-    downloads data for several available years and combines them together into one DataFrame. It is only designed to download data from this specific API for future analysis
+    downloads data for several available years and combines them together into single DataFrame. It is only designed to download the data from this specific API for future analysis
     and thus can be reused in different project on its own.
 
     ...
@@ -48,11 +49,12 @@ class Downloader:
     month : int
         The month from the specific year you want to obatin the data from. It has to be of an integer type and it has to be in the range from 1-12.
 
+
     Methods
     -------
     get_request()
         Tries to download the data from the kriminalita.policie API for the specified year and month of the class constructor. If it fails it might mean that there is a problem on the side of the API. 
-        Check the link, whether the data is available there.
+        Check the link: https://kriminalita.policie.cz/ , whether the data is available there.
 
     unzip_files_return_dataframe()
         Returns DataFrame if the previous get_request() was successful by unzipping the downloaded file. Make sure not to rename the downloaded files. Returns None if it was not able
@@ -95,21 +97,21 @@ class Downloader:
             raise ValueError("The month has to be between 1-12.")
         
         #convert the numbers from 1-9 to 01-09
-        self.months_mapping = ["0" + str(month) if month < 10 else str(month) for month in range(1,13)]
-        self.month = str(month)
-        self.year = str(year)
+        self._months_mapping = ["0" + str(month) if month < 10 else str(month) for month in range(1,13)]
+        self._month = str(month)
+        self._year = str(year)
         if month in range(1,10):
-            self.month = self.months_mapping[month - 1]
-        self.file_name = self.year + self.month  
+            self.month = self._months_mapping[month - 1]
+        self._file_name = self._year + self.month  
 
     def get_request(self):
         try:
-            r = requests.get("https://kriminalita.policie.cz/api/v2/downloads/" + self.file_name + ".zip")
-            self.status_code = r.status_code
-            print(self.status_code)
+            r = requests.get("https://kriminalita.policie.cz/api/v2/downloads/" + self._file_name + ".zip")
+            self._status_code = r.status_code
+            print(self._status_code)
             self.request = r
-            if self.status_code == 200:
-                with open(self.file_name + ".zip",'wb') as output_file:
+            if self._status_code == 200:
+                with open(self._file_name + ".zip",'wb') as output_file:
                     output_file.write(r.content)
         except:
             print("Something went wrong, try to check your previous steps.")
@@ -159,7 +161,7 @@ class Downloader:
                 raise ValueError("The year has to be greater than 2012.")
             
         for year in years:
-            for month in self.months_mapping:
+            for month in self._months_mapping:
                 self.file_name = f"{year}" + month
                 file = self.get_request()
                 unzipped_file = self.unzip_files_return_dataframe()
@@ -181,10 +183,10 @@ class DataPipeline:
     Parameters
     ----------
     crime_data : pandas DataFrame, None
-        The crime data to be processed. If create_data = False crime_data must be set to None (default is None). 
+        The crime data to be processed. If create_data = False crime_data should be set to None (default is None). 
 
     create_data : bool, optional
-        Flag to indicate whether to create data from the provided crime_data or to load them from data_in_polygons (default is False).
+        Flag to indicate whether to create new data from the provided crime_data or to load them from data_in_polygons.csv (default is False).
 
     Attributes
     ----------
@@ -207,7 +209,7 @@ class DataPipeline:
         DataFrame containing counts of crimes per polygon.
 
     paq_data : pandas DataFrame
-        DataFrame containing additional data from PAQ research for further analysis.
+        DataFrame containing additional socio-economical data from PAQ research for further analysis.
 
     final_table : pandas DataFrame
         Final merged table prepared for analysis and visualizations.
@@ -242,7 +244,7 @@ class DataPipeline:
     FileNotFoundError
         When you call preprocess_paq_data but do not have Data-pro-Python-DataPAQ.csv in your directory.
     MethodOrderError
-        When you do not follow the correct order how to call the methods.
+        When you do not follow the correct order to call the methods.
     """
 
     def __init__(self, crime_data = None, create_data = False) -> None:
@@ -258,17 +260,16 @@ class DataPipeline:
         self.people_in_polygons.reset_index(drop=True,inplace=True)
         self.people_in_polygons.rename(columns = {"Kraje / SO ORP":"ORP_NAZEV",
                                                 "Počet\nobyvatel\ncelkem":"AMMOUNT"},inplace = True)
+        
         #read the shapefile with the correct encoding
         geojson = gp.read_file("ORP_P.shp",encoding = "Windows-1250")
         #change the epsg encoding
         self.polygons = geojson.to_crs(epsg=4326)
         
-        #TODO:check that crime data was provided and isinstance(DataFrame) 
         #if create_data = True load the provided criminal records
         if self.create_data:
             self.crime_data = crime_data
 
-        #TODO: write to README that data_in_polygons will be part of the repository in order to run the project exactly as we did
         #if the data already exists load it from data_in_polygons.csv
         if not self.create_data:
             try:
@@ -285,7 +286,6 @@ class DataPipeline:
         This method matches crime data points to corresponding polygons based on geographical coordinates.
 
         """
-
         if self.create_data:
             #filter the data for economic nature only
             self.crime_data = self.crime_data[(self.crime_data["relevance"] == 3) | 
@@ -295,10 +295,13 @@ class DataPipeline:
                                             (self.crime_data["state"] == 3) | 
                                             (self.crime_data["state"] == 4)]
             self.crime_data= self.crime_data[(self.crime_data["types"] >= 18) & (self.crime_data["types"] <= 62)]
+
             #create the new column for the name of the ORP
             self.crime_data["ORP"] = np.nan
+
             #transform the longtitue and lattitude to Point class
             self.crime_data["points"] = self.crime_data.apply(lambda row: Point(row["x"],row["y"]),axis=1)
+
             #iterate through all the points and find the polygon where they belong, write the name to the ORP column 
             #and break finding of the region (point can only by part of one polygon)
             for indx,point in enumerate(self.crime_data["points"]):
@@ -309,7 +312,7 @@ class DataPipeline:
 
             #load the final matched version to data_in_polygons
             self.data_in_polygons = self.crime_data
-        
+    
     def compute_counts_per_polygon(self):
         """
         Compute counts of crimes per polygon.
@@ -385,11 +388,12 @@ class DataPipeline:
             self.final_table["Počet kriminálních aktivit per capita"] = self.final_table["counts"]/self.final_table["AMMOUNT"]
             self.final_table = self.final_table.replace(to_replace=np.inf,value=0)
             self.final_table.drop(["NAZEV","counts","Název ORP","ORP_NAZEV","AMMOUNT"],axis = 1,inplace=True)
-            weights = self.final_table.corr()[["Počet kriminálních aktivit per capita"]]
-            weights.drop(["Počet kriminálních aktivit per capita"],axis = 0,inplace=True)
-            weights = weights.values
+            #setting weights
+            weights = np.array([0.6,0,0.4,0]).reshape([4,1])
+            #applying the weights
             self.final_table["Criminality risk index"] = self.final_table.apply(lambda row: (row["Lidé v exekuci (2021) [%]"]*weights[0] + row["Podíl lidí bez středního vzdělání (2021) [%]"]*weights[1] +
                                                             row["Domácnosti čerpající přídavek na živobytí (2020) [%]"]*weights[2] + row["Propadání (průměr 2015–2021) [%]"]*weights[3])[0],axis=1)
+            
             return self.final_table
         except:
             raise MethodOrderError("compute_counts_per_polygon",["match_crime_data_to_polygons", "compute_counts_per_polygon", "preprocess_paq_data","merge_final_table"])

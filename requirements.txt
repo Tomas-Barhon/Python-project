@@ -1,5 +1,4 @@
-ipykernel 
-jupyter
+ipykernel
 seaborn 
 folium
 matplotlib 
@@ -8,4 +7,4 @@ numpy
 geopandas
 shapely
 openpyxl
-
+pytest
